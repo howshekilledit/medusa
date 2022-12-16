@@ -36,7 +36,10 @@ function draw(){
   //var strk_clr = lerpColor(color('#a3e3fe0'), color('#032edc'), frameCount/circles.length);
   var clr = '#ffffff';
   var strk_clr = '#000000';
-  var ellipse = cvs.ellipse(bprops.diam, bprops.diam).attr({cx: bprops.y, cy: bprops.x+100, opacity: 0.5, fill: clr}).stroke({width: 0.05 * bprops.diam, color: strk_clr});
+  diam = map(abs(circles.length/2-frameCount), 0, circles.length/2, 100, 0);
+  var ellipse = cvs.ellipse(diam, diam).attr({
+    cx: bprops.y, cy: bprops.x+100, opacity: 0.5, fill: clr}).stroke({
+      width: 0.05 * diam, color: strk_clr});
   ellipse.mouseover(function() {
     this.fill({ color: '#ff0000' })
   })
