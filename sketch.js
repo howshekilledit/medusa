@@ -15,16 +15,13 @@ let stack = []
 
 let incr = 50;
 let dd = 8;
-let curldiv = 2;
+let curldiv = 4;
 let filename = "incr"+incr+"diam"+dd+"curl"+curldiv;
 let bez_count = 0;
 while (bez_count < 40) {
     nbez = nextbez(bez, width, b);
     for (let l = 0; l < incr; l++) {
-        circles.push(new bezprops(bez[0], bez[1], bez[2], bez[3], incr, width, height, l, dd, 2));
-        //print(bprops.diam);
-        //cv2.circle(img, (int(bprops.x), int(bprops.y)), int(bprops.diam+1), (255, 255, 255), thickness=-1);
-        //cv2.circle(img, (int(bprops.x), int(bprops.y)), int(bprops.diam), (0, 0, 0), thickness=-1);
+        circles.push(new bezprops(bez[0], bez[1], bez[2], bez[3], incr, width, height, l, dd, 0.25));
     }
     b = b+width/curldiv;
     bez = nbez;
@@ -35,9 +32,11 @@ while (bez_count < 40) {
 
 function draw(){
   var bprops = circles[frameCount];
-  var clr = lerpColor(color('#032edc'), color('#a3e3fe0'), frameCount/circles.length);
-  var strk_clr = lerpColor(color('#a3e3fe0'), color('#032edc'), frameCount/circles.length);
-  var ellipse = cvs.ellipse(bprops.diam, bprops.diam).attr({cx: bprops.y, cy: bprops.x+100, opacity: 0.1, fill: clr}).stroke({width:1, color: strk_clr});
+  //var clr = lerpColor(color('#032edc'), color('#a3e3fe0'), frameCount/circles.length);
+  //var strk_clr = lerpColor(color('#a3e3fe0'), color('#032edc'), frameCount/circles.length);
+  var clr = '#ffffff';
+  var strk_clr = '#000000';
+  var ellipse = cvs.ellipse(bprops.diam, bprops.diam).attr({cx: bprops.y, cy: bprops.x+100, opacity: 0.5, fill: clr}).stroke({width: 0.05 * bprops.diam, color: strk_clr});
   ellipse.mouseover(function() {
     this.fill({ color: '#ff0000' })
   })
