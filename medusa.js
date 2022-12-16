@@ -5,7 +5,7 @@ class pt{
     }
 }
 class bezprops {
-    constructor(pt0, pt1, pt2, pt3, incr, width, height, i, didiv) {
+    constructor(pt0, pt1, pt2, pt3, incr, width, height, i, didiv, diamfact = 1) {
         let t = float(i) * 1/float(incr)
         this.t = t
         //print t
@@ -15,7 +15,7 @@ class bezprops {
         //this.dist = sqrt(pow(this.x-pt0.x, 2) + pow(this.y-pt0.y, 2))
         this.dist = sqrt(pow(width-this.x, 2) + pow(height-(this.y), 2))
         this.subind = i
-        this.diam = abs((1-abs(height/2-this.dist)/(height/2))*width/didiv)
+        this.diam = abs((1-abs(height/2-this.dist)/(height/2))*width/didiv) * diamfact;
         //to match js version, add diamfact
         this.pt0 = pt0
         this.pt1 = pt1
