@@ -1,41 +1,18 @@
-let circles = [];
+let hair; 
 let cvs; //svg canvas
 //note that right now width is the range for control points
 //and height is the range for the bezier curve full length
 function setup() {
   cvs = SVG().addTo('main').size(windowWidth, windowWidth).attr({ fill: '#000' });
   rectangle = cvs.rect(windowWidth, windowWidth).attr({ fill: '#000' });
-  let b = 0 //y location
-  svg = document.querySelector('svg');
-  
-
-
-  let bez = []
-  let nbez = []
-
-  let count = 0
-  //let perms = list(itertools.permutations(range(1,8), 3))
-  //bez = newbez(width, width/perms[0][2])
-  bez = newbez(200, 50);
-  let stack = []
-
+ 
   let incr = 30;
   let dd = 8;
   let curldiv = 2;
-  let filename = "incr" + incr + "diam" + dd + "curl" + curldiv;
   let bez_count = 0;
   let last_x = 0;
-  while (last_x < windowWidth * 0.9) {
-    nbez = nextbez(bez, 200, b);
-    for (let l = 0; l < incr; l++) {
-      circles.push(new bezprops(bez[0], bez[1], bez[2], bez[3], incr, 200, windowWidth, l, dd, 0.25));
-    }
-    last_x = circles[circles.length - 1].y;
 
-    b = b + width / curldiv;
-    bez = nbez;
-    bez_count++;
-  }
+  hair = new medusa(incr, windowWidth, 300, 1, true, 1, 1);
   frameRate(12);
 
 }

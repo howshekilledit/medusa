@@ -4,42 +4,67 @@ class pt{
         this.y = y
     }
 }
-class bezprops {
-    constructor(pt0, pt1, pt2, pt3, incr, width, height, i, didiv, diamfact = 1) {
-        let t = float(i) * 1/float(incr)
+class medusa {
+    constructor(
+        incr, //number of points to make up curve
+        max_hair_length, //length of hair
+        curl_lat, //max latitude of curl
+        didiv, //divisor to help determine diameter
+        hor = true, //true if horizontal hair; false if vertical hair
+        diamfact = 1, //multipler to help determine diameter
+        curl_div = 2 //curl divisor; higher number is curlier
+        ) {
+        let t = float(index) * 1/float(incr)
         this.t = t
         //print t
-        let tdif = 1 - t
-        this.x = pow(tdif, 3)*(pt0.x) + 3*(pow(tdif,2)*t*(pt1.x)) + 3*tdif*pow(t,2)*(pt2.x) + pow(t,3)*(pt3.x)
-        this.y = pow(tdif, 3)*(pt0.y) + 3*(pow(tdif,2)*t*(pt1.y)) + 3*tdif*pow(t,2)*(pt2.y) + pow(t,3)*(pt3.y)
-        //this.dist = sqrt(pow(this.x-pt0.x, 2) + pow(this.y-pt0.y, 2))
-        this.dist = sqrt(pow(width-this.x, 2) + pow(height-(this.y), 2))
-        this.subind = i
-        this.diam = abs((1-abs(height/2-this.dist)/(height/2))*width/didiv) * diamfact;
-        //to match js version, add diamfact
-        this.pt0 = pt0
-        this.pt1 = pt1
-        this.pt2 = pt2
-        this.pt3 = pt3
+        this.tdif = 1 - t;
+        this.curl_lat = curl_lat;
+        this.curl_div = curl_div;
+        this.max_hair_length = max_hair_length;
+        this.didiv = didiv;
+        this.hor = hor;
+        this.diamfact = diamfact; 
+        
     }
-}
 
-function nextbez(bez, width, y){
-    //get first point from lst
-    let nbez = [bez[3]];
-    for (let x = 1; x < 4; x++){
-        nbez.push(new pt(random(width*0.25, width*0.75), random(0, width*0.75)+y));
+    //these functions deal with generating bezier curves, which 
+    //are defined by four control points
+    next_curve(last_curve, lateral_coord){
+        let curve = [];
+        if(last_curve){
+            curve.push([last_curve[3]]);
+        } 
+        for (let i = curve.length; i < 4; i++){
+            if(this.hor){
+                curve.push(new pt(random(0, this.curl_lat*0.75)+lateral_coord),
+                random(this.curl_lat*0.25, this.curl_lat*0.75));
+            } else {
+                curve.push(new pt(random(this.curl_lat*0.25, this.curl_lat*0.75), 
+                random(0, this.curl_lat*0.75)+lateral_coord));
+            }
+        }
     }
-    //adjust new bez to match slope of last
-    nbez[1].x = nbez[0].x + (bez[3].x - bez[2].x);
-    nbez[1].y = nbez[0].y + (bez[3].y - bez[2].y);
-    return nbez;
-}
-
-function newbez(width, y) {
-    bez = [];
-    for (var x = 0; x < 4; x++) {
-        bez.push(new pt(random(width*0.25, width*0.75), random(0, width*0.75)+y));
+    gen_curves(start_coord){ //generate the series of bezier curves that mnake up the hair
+        this.curves = [this.next_curve(false, start_coord)];
+        this_coord = start_coord + this.curl_lat/this.curl_div; 
+        while(this_coord <= this.max_hair_length){
+            this.curves.push(this.next_curve(this.curves.slice(-1), this_coord));
+            this_coord += this.curl_lat/this.curl_div; 
+        }
     }
-    return bez;
+    gen_circles(){
+        var circles = [];
+        for(let p of this.curves){  
+            for(let i = 0; i < this.incr; i++){
+                this.x = pow(tdif, 3)*(pt0.x) + 3*(pow(tdif,2)*t*(pt1.x)) + 
+                    3*tdif*pow(t,2)*(pt2.x) + pow(t,3)*(pt3.x);
+                this.y = pow(tdif, 3)*(pt0.y) + 3*(pow(tdif,2)*t*(pt1.y)) + 
+                    3*tdif*pow(t,2)*(pt2.y) + pow(t,3)*(pt3.y);
+                //this.dist = sqrt(pow(this.x-pt0.x, 2) + pow(this.y-pt0.y, 2))
+                this.diam = abs((1-abs(hair_length/2-this.dist)/(height/2))*curl_lat/didiv) * diamfact;
+                //to match js version, add diamfact
+                this.ctl_pts = ctl_pts; 
+            }
+        }
+    }
 }
