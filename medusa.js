@@ -1,7 +1,7 @@
 class pt{
     constructor(x, y) {
-        this.x = x
-        this.y = y
+        this.x = x;
+        this.y = y;
     }
 }
 class medusa {
@@ -9,21 +9,19 @@ class medusa {
         incr, //number of points to make up curve
         max_hair_length, //length of hair
         curl_lat, //max latitude of curl
-        didiv, //divisor to help determine diameter
         hor = true, //true if horizontal hair; false if vertical hair
-        diamfact = 1, //multipler to help determine diameter
-        curl_div = 2 //curl divisor; higher number is curlier
+        min_diam = 1,
+        max_diam = 70,
+        curl_div = 5 //curl divisor; higher number is curlier
         ) {
-        let t = float(index) * 1/float(incr)
-        this.t = t
-        //print t
-        this.tdif = 1 - t;
         this.curl_lat = curl_lat;
         this.curl_div = curl_div;
         this.max_hair_length = max_hair_length;
-        this.didiv = didiv;
+        this.min_diam = min_diam;
+        this.max_diam = max_diam;
         this.hor = hor;
-        this.diamfact = diamfact; 
+  
+        this.incr = incr;
         
     }
 
@@ -32,38 +30,67 @@ class medusa {
     next_curve(last_curve, lateral_coord){
         let curve = [];
         if(last_curve){
-            curve.push([last_curve[3]]);
+            curve.push(last_curve[3]);
         } 
         for (let i = curve.length; i < 4; i++){
             if(this.hor){
-                curve.push(new pt(random(0, this.curl_lat*0.75)+lateral_coord),
-                random(this.curl_lat*0.25, this.curl_lat*0.75));
+                curve.push(new pt(
+                    random(0, this.curl_lat*0.75)+lateral_coord,
+                    random(this.curl_lat*0.25, this.curl_lat*0.75)
+                    ));
             } else {
-                curve.push(new pt(random(this.curl_lat*0.25, this.curl_lat*0.75), 
-                random(0, this.curl_lat*0.75)+lateral_coord));
+                curve.push(new pt(
+                    random(this.curl_lat*0.25, this.curl_lat*0.75),
+                    random(0, this.curl_lat*0.75)+lateral_coord
+                    ));
             }
         }
+        return curve;
     }
     gen_curves(start_coord){ //generate the series of bezier curves that mnake up the hair
         this.curves = [this.next_curve(false, start_coord)];
-        this_coord = start_coord + this.curl_lat/this.curl_div; 
+        let this_coord = start_coord + this.curl_lat/this.curl_div; 
         while(this_coord <= this.max_hair_length){
-            this.curves.push(this.next_curve(this.curves.slice(-1), this_coord));
+            this.curves.push(this.next_curve(this.curves[this.curves.length-1], this_coord));
             this_coord += this.curl_lat/this.curl_div; 
         }
     }
     gen_circles(){
-        var circles = [];
+        this.circles = [];
         for(let p of this.curves){  
             for(let i = 0; i < this.incr; i++){
-                this.x = pow(tdif, 3)*(pt0.x) + 3*(pow(tdif,2)*t*(pt1.x)) + 
-                    3*tdif*pow(t,2)*(pt2.x) + pow(t,3)*(pt3.x);
-                this.y = pow(tdif, 3)*(pt0.y) + 3*(pow(tdif,2)*t*(pt1.y)) + 
-                    3*tdif*pow(t,2)*(pt2.y) + pow(t,3)*(pt3.y);
-                //this.dist = sqrt(pow(this.x-pt0.x, 2) + pow(this.y-pt0.y, 2))
-                this.diam = abs((1-abs(hair_length/2-this.dist)/(height/2))*curl_lat/didiv) * diamfact;
-                //to match js version, add diamfact
-                this.ctl_pts = ctl_pts; 
+                let t = float(i) * 1/float(this.incr);
+                let tdif = 1 - t; 
+                let x = pow(tdif, 3)*(p[0].x) + 3*(pow(tdif,2)*t*(p[1].x)) + 
+                    3*tdif*pow(t,2)*(p[2].x) + pow(t,3)*(p[3].x);
+                let y = pow(tdif, 3)*(p[0].y) + 3*(pow(tdif,2)*t*(p[1].y)) + 
+                    3*tdif*pow(t,2)*(p[2].y) + pow(t,3)*(p[3].y);
+                //edit this to account for vertical
+                let max_dist = sqrt(pow(this.max_hair_length/2, 2) + pow(this.curl_lat/2, 2));
+                let dist_from_center = sqrt(pow(x - this.max_hair_length/2, 2) + pow(y-this.curl_lat/2, 2));
+                // let diam = abs((1-abs(this.max_hair_length/2-dist)/(this.curl_lat/2))*
+                //     this.curl_lat/this.didiv) * this.diamfact;
+                let diam = map(dist_from_center, 0, max_dist, this.max_diam, this.min_diam);
+                this.circles.push({x:x, y:y, diam:diam});     
+            }
+        }
+    }
+    draw_circle(cvs, index, fill, stroke){
+        let diam = map(abs(this.circles.length/2-index), 0, this.circles.length/2, this.max_diam, this.min_diam); 
+        this.circles[index].ellipse = cvs.ellipse(diam, diam).attr(
+            {cx: this.circles[index].x, cy: this.circles[index].y, 
+            fill: fill, stroke: stroke, opacity: 0.5});
+            this.circles[index].ellipse.mouseover(function(){
+                console.log(this);
+            });
+        return this.circles[index].ellipse; 
+    }
+    writh(){
+        for(let c of this.circles){
+            c.x += random(1) - 2; 
+            c.y += random(1) - 2;
+            if(c.ellipse){            
+                c.ellipse.attr({cx: c.x, cy: c.y});
             }
         }
     }
