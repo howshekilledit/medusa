@@ -3,6 +3,8 @@ html, body {
   padding: 0;
 
 }
-canvas {
+svg{
   display: block;
+  position:absolute;
+  top:0;
 }

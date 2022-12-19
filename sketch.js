@@ -1,9 +1,13 @@
 let circles = [];
+let cvs; //svg canvas
 //note that right now width is the range for control points
 //and height is the range for the bezier curve full length
 function setup() {
-  cvs = SVG().addTo('main').size(windowWidth, windowWidth).attr({ background: '#fff' });
+  cvs = SVG().addTo('main').size(windowWidth, windowWidth).attr({ fill: '#000' });
+  rectangle = cvs.rect(windowWidth, windowWidth).attr({ fill: '#000' });
   let b = 0 //y location
+  svg = document.querySelector('svg');
+  
 
 
   let bez = []
@@ -36,8 +40,19 @@ function setup() {
 
 }
 
+function mouseClicked() {
+  console.log(rectangle.fill());
+  if(rectangle.fill() == '#000000'){
+    rectangle.attr({fill: '#fff'});
+  }else{
+    rectangle.attr({fill: '#000'});
+  }
+
+}
+
 function draw() {
   var bprops = circles[frameCount];
+  //svg.style.left = frameCount;  //move camera
   //var clr = lerpColor(color('#032edc'), color('#a3e3fe0'), frameCount/circles.length);
   //var strk_clr = lerpColor(color('#a3e3fe0'), color('#032edc'), frameCount/circles.length);
   var clr = '#ffffff';
