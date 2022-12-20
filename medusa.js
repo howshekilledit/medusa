@@ -95,7 +95,6 @@ class medusa {
                 this.circles[abs_i].x = x;
                 this.circles[abs_i].y = y; 
                 if(this.circles[abs_i].ellipse){
-                    console.log(x, y);
                     this.circles[abs_i].ellipse.attr({cx:x, cy:y});
                 }  
                 abs_i++; 
@@ -112,7 +111,6 @@ class medusa {
     writhe(amt = 1){
         for(let i = 0; i < this.curves.length; i++){
             for(let p = 0; p < 4; p++){
-                console.log(this.curves[i]);
                 this.curves[i][p].x += random(-amt, amt); 
                 this.curves[i][p].y += random(-amt, amt); 
             }
