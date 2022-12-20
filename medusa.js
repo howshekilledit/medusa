@@ -9,8 +9,7 @@ class medusa {
         incr, //number of points to make up curve
         max_hair_length, //length of hair
         curl_lat, //max latitude of curl
-        curl_div = 5, //curl divisor; higher number is curlier
-
+        curl_div = 2, //curl divisor; higher number is curlier
         hor = true, //true if horizontal hair; false if vertical hair
         min_diam = 1,
         max_diam = 70,
@@ -21,9 +20,25 @@ class medusa {
         this.min_diam = min_diam;
         this.max_diam = max_diam;
         this.hor = hor;
-  
         this.incr = incr;
-        
+        this.offset = new pt(0, 0); //initialize offset at zero, use set offset to change
+    }
+
+    set_offset(point){
+        this.offset = point; 
+    }
+
+    get_dimensions(){ //get dimensions of hair footprint
+        let x_sort = this.circles.sort(
+            (a, b) => a.x - b.x
+        );
+        let y_sort = this.circles.sort(
+            (a, b) => a.y - b.y
+        ); 
+        return new pt(
+            abs(x_sort[this.circles.length-1].x-x_sort[0].x),
+            abs(y_sort[this.circles.length-1].y-y_sort[0].y)
+        );
     }
 
     //these functions deal with generating bezier curves, which 
@@ -46,6 +61,10 @@ class medusa {
                     ));
             }
         }
+        if(last_curve){
+            curve[1].x = curve[0].x + (last_curve[3].x - last_curve[2].x);
+            curve[1].y = curve[0].y + (last_curve[3].y - last_curve[2].y);
+        }
         return curve;
     }
     gen_curves(start_coord){ //generate the series of bezier curves that mnake up the hair
@@ -56,7 +75,8 @@ class medusa {
             this_coord += this.curl_lat/this.curl_div; 
         }
     }
-    gen_circles(){
+    gen_circles(){ //using the curve information created in gen_curves, generate
+                    //parameters for the circles that make up the hair
         this.circles = [];
         for(let p of this.curves){  
             for(let i = 0; i < this.incr; i++){
@@ -76,7 +96,7 @@ class medusa {
             }
         }
     }
-    update_circles(){
+    update_circles(){ //update circles after changing the structuring curves
         let abs_i = 0; 
         for(let p of this.curves){  
             for(let i = 0; i < this.incr; i++){
@@ -94,21 +114,25 @@ class medusa {
                 let diam = map(dist_from_center, 0, max_dist, this.max_diam, this.min_diam);
                 this.circles[abs_i].x = x;
                 this.circles[abs_i].y = y; 
+                //if the circle has already been drawn, update it
                 if(this.circles[abs_i].ellipse){
-                    this.circles[abs_i].ellipse.attr({cx:x, cy:y});
+                    this.circles[abs_i].ellipse.attr({cx:x+this.offset.x, 
+                        cy:y + this.offset.y});
                 }  
                 abs_i++; 
             }
         }
     }
+    //draw circle, identified by index, on SVG canvas
     draw_circle(cvs, index, fill, stroke){
         let diam = map(abs(this.circles.length/2-index), 0, this.circles.length/2, this.max_diam, this.min_diam); 
         this.circles[index].ellipse = cvs.ellipse(diam, diam).attr(
-            {cx: this.circles[index].x, cy: this.circles[index].y, 
+            {cx: this.circles[index].x + this.offset.x, 
+                cy: this.circles[index].y + this.offset.y, 
             fill: fill, stroke: stroke, opacity: 0.5});
         return this.circles[index].ellipse; 
     }
-    writhe(amt = 1){
+    writhe(amt = 1){ //changes each curve by specified "amt"
         for(let i = 0; i < this.curves.length; i++){
             for(let p = 0; p < 4; p++){
                 this.curves[i][p].x += random(-amt, amt); 
@@ -116,6 +140,8 @@ class medusa {
             }
             if(i > 0){
                 this.curves[i][0] = this.curves[i-1][3];
+                this.curves[i][1].x = this.curves[i][0].x + (this.curves[i-1][3].x - this.curves[i-1][2].x);
+                this.curves[i][1].y = this.curves[i][0].y + (this.curves[i-1][3].y - this.curves[i-1][2].y);
             }
         }
         this.update_circles(); 
