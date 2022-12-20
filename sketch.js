@@ -13,15 +13,15 @@ function setup() {
 
   let incr = 30;
 
-  let hair_width = windowWidth *0.9;
+  let max_hair_width = windowWidth *0.9;
  
-  hair = new medusa(incr, hair_width, 200, 5);
-  red_hair = new medusa(incr, hair_width, 300);
+  hair = new medusa(incr, max_hair_width, 200, 5);
+  red_hair = new medusa(incr, max_hair_width, 300);
   hair.gen_curves(0);
   hair.gen_circles();
   let dimensions = hair.get_dimensions();
   console.log(dimensions);
-  hair.set_offset(new pt((windowWidth-dimensions.x)/2, (windowWidth-dimensions.y)/2));
+  hair.set_offset(new pt((windowWidth-dimensions.x)/2, (windowHeight-dimensions.y)/2));
   red_hair.gen_curves(0);
   red_hair.gen_circles();
   console.log(hair);

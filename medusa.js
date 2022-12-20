@@ -29,15 +29,9 @@ class medusa {
     }
 
     get_dimensions(){ //get dimensions of hair footprint
-        let x_sort = this.circles.sort(
-            (a, b) => a.x - b.x
-        );
-        let y_sort = this.circles.sort(
-            (a, b) => a.y - b.y
-        ); 
         return new pt(
-            abs(x_sort[this.circles.length-1].x-x_sort[0].x),
-            abs(y_sort[this.circles.length-1].y-y_sort[0].y)
+            max(this.circles.map(c => c.x))-min(this.circles.map(c => c.x)),
+            max(this.circles.map(c => c.y))-min(this.circles.map(c => c.y))
         );
     }
 
@@ -124,12 +118,13 @@ class medusa {
         }
     }
     //draw circle, identified by index, on SVG canvas
-    draw_circle(cvs, index, fill, stroke){
+    draw_circle(cvs, index, fill_clr, strk_clr){
         let diam = map(abs(this.circles.length/2-index), 0, this.circles.length/2, this.max_diam, this.min_diam); 
         this.circles[index].ellipse = cvs.ellipse(diam, diam).attr(
             {cx: this.circles[index].x + this.offset.x, 
                 cy: this.circles[index].y + this.offset.y, 
-            fill: fill, stroke: stroke, opacity: 0.5});
+            fill: fill_clr, opacity: 0.5}).stroke({
+                width: 0.05 * diam, color: strk_clr});
         return this.circles[index].ellipse; 
     }
     writhe(amt = 1){ //changes each curve by specified "amt"
