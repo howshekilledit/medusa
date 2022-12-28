@@ -24,14 +24,21 @@ function setup() {
   hair.gen_curves(0);
   hair.gen_circles();
   let dimensions = hair.get_dimensions();
-  console.log(dimensions);
-  var offset = new pt(/*(windowWidth - dimensions.x) / 2*/0, (windowHeight - dimensions.y) / 2);
+
+  var offset = new pt((windowWidth - dimensions.x) / 2, (windowHeight - dimensions.y) / 2);
+  console.log(dimensions, windowWidth, offset);
+
   hair.set_offset(offset);
   red_hair.set_offset(offset);
   red_hair.gen_curves(0);
   red_hair.gen_circles();
   console.log(hair);
   frameRate(12);
+  noLoop();
+  hair.draw_all_circles(cvs, '#fff', '#000');
+  //cvs.line(offset.x, offset.y, offset.x + dimensions.x, offset.y + dimensions.y).stroke({ width: 1, color: '#f00' });
+  cvs.rect(dimensions.x, dimensions.y).move(offset.x, offset.y).stroke({ width: 1, color: '#f00' }).fill('none');
+  //red_hair.draw_all_circles(cvs, '#f00', '#000');
 
 }
 

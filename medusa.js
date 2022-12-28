@@ -127,6 +127,12 @@ class medusa {
                 width: 0.05 * diam, color: strk_clr});
         return this.circles[index].ellipse; 
     }
+    //draw all circles on SVG canvas
+    draw_all_circles(cvs, fill_clr, strk_clr){
+        for(let i = 0; i < this.circles.length; i++){
+            this.draw_circle(cvs, i, fill_clr, strk_clr);
+        }
+    }
     writhe(amt = 1){ //changes each curve by specified "amt"
         for(let i = 0; i < this.curves.length; i++){
             for(let p = 0; p < 4; p++){
