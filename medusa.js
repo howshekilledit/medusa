@@ -29,9 +29,10 @@ class medusa {
     }
 
     get_dimensions(){ //get dimensions of hair footprint
+        let max_rad = max(this.circles.map(c => c.diam))/2; 
         return new pt(
-            max(this.circles.map(c => c.x))-min(this.circles.map(c => c.x)),
-            max(this.circles.map(c => c.y))-min(this.circles.map(c => c.y))
+            max_rad*2 + max(this.circles.map(c => c.x))-min(this.circles.map(c => c.x)),
+            max_rad*2 + max(this.circles.map(c => c.y))-min(this.circles.map(c => c.y))
         );
     }
 
