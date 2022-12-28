@@ -1,27 +1,33 @@
 let hair;
 let red_hair;
 let cvs; //svg canvas
+let svg; //svg DOM object
 let rectangle;
-let start; 
-let hair_width; 
+let start;
+let hair_width;
+let panning = false; //is 'camera' panning?
 //note that right now width is the range for control points
 //and height is the range for the bezier curve full length
 function setup() {
-  cvs = SVG().addTo('main').size(windowWidth, windowWidth).attr({ fill: '#000' });
-  rectangle = cvs.rect(windowWidth, windowHeight).attr({ fill: '#000' });
 
+  //svg canvas to draw on with svg.js/p5.js
+  cvs = SVG().addTo('main').size(windowWidth, windowHeight).attr({ fill: '#000' });
+  //svg DOM object to manipulate with javascript
+  svg = document.getElementsByTagName('svg')[0];
 
   let incr = 30;
 
-  let max_hair_width = windowWidth *0.9;
- 
+  let max_hair_width = windowWidth * 0.8;
+
   hair = new medusa(incr, max_hair_width, 200, 5);
-  red_hair = new medusa(incr, max_hair_width, 300);
+  red_hair = new medusa(incr, max_hair_width, 200, 5);
   hair.gen_curves(0);
   hair.gen_circles();
   let dimensions = hair.get_dimensions();
   console.log(dimensions);
-  hair.set_offset(new pt((windowWidth-dimensions.x)/2, (windowHeight-dimensions.y)/2));
+  var offset = new pt(/*(windowWidth - dimensions.x) / 2*/0, (windowHeight - dimensions.y) / 2);
+  hair.set_offset(offset);
+  red_hair.set_offset(offset);
   red_hair.gen_curves(0);
   red_hair.gen_circles();
   console.log(hair);
@@ -31,18 +37,20 @@ function setup() {
 
 
 function draw() {
+  if(panning){
+    svg.style.left = -frameCount;
+  }
   if (frameCount < hair.circles.length) {
-    let attr = hair.circles[frameCount];
-    let red_attr = red_hair.circles[red_hair.circles.length - frameCount];
-
-    let diam = map(abs(hair.circles.length / 2 - frameCount), 0, hair.circles.length / 2, hair.max_diam, hair.min_diam);
     let ellipse = hair.draw_circle(cvs, frameCount, '#fff', '#000');
+    let red_ellipse = red_hair.draw_circle(cvs, red_hair.circles.length - frameCount, '#f00', '#000');
     ellipse.mouseover(function () {
       hair.writhe(2);
-
     });
-  }else {
-    noLoop(); 
+    red_ellipse.mouseover(function () {
+      red_hair.writhe(4);
+    });
+  } else {
+    noLoop();
   }
 
 
@@ -51,10 +59,18 @@ function draw() {
 
 
 function mouseClicked() {
-  if (rectangle.fill() == '#000000') {
-    rectangle.attr({ fill: '#fff' });
+  if (document.body.style.zoom == 1.0) {
+    document.body.style.zoom = 3.0;
+    svg.style.top = -windowHeight/3;
+    panning = true;
   } else {
-    rectangle.attr({ fill: '#000' });
+    document.body.style.zoom = 1.0;
+    svg.style.left = 0;
+    svg.style.top = 0;
+    panning = false;
   }
+
+  //this.blur();
+
 
 }

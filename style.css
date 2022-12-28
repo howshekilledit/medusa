@@ -1,10 +1,14 @@
 html, body {
   margin: 0;
   padding: 0;
+  background: black;
 
 }
 svg{
   display: block;
   position:absolute;
+  /*border: 1px solid red;*/
   top:0;
+  left:0;
+
 }
