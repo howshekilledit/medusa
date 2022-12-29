@@ -19,13 +19,13 @@ function setup() {
 
   let max_hair_width = windowWidth * 0.8;
 
-  hair = new medusa(incr, max_hair_width, 200, 5);
+  hair = new medusa(incr, max_hair_width, 200, 5, 'None', ['#00f', '#f00']);
   red_hair = new medusa(incr, max_hair_width, 200, 5);
   hair.gen_curves(0);
   hair.gen_circles();
   let dimensions = hair.get_dimensions();
   let corners = hair.get_corners();
-
+  //get offset to center hair
   var offset = new pt((windowWidth - dimensions.x)/2 - corners[0].x, (windowHeight - dimensions.y)/2 - corners[0].y);
   hair.set_offset(offset);
   red_hair.set_offset(offset);
@@ -33,17 +33,11 @@ function setup() {
   red_hair.gen_circles();
   console.log(hair);
   frameRate(12);
-  noLoop();
-  hair.draw_all_circles(cvs, '#fff', '#000');
-  hair.circles.sort((a, b) => a.x - b.x)[0].ellipse.attr('fill', '#00f');
+  //noLoop();
+  //hair.draw_all_circles(cvs, '#fff', '#000');
   for(let i = 0; i < corners.length; i++){
-    cvs.line(corners[i].x + offset.x, corners[i].y + offset.y, corners[(i+1)%corners.length].x + offset.x, corners[(i+1)%corners.length].y + offset.y).stroke({ width: 1, color: '#f00' });
+     cvs.line(corners[i].x + offset.x, corners[i].y + offset.y, corners[(i+1)%corners.length].x + offset.x, corners[(i+1)%corners.length].y + offset.y).stroke({ width: 1, color: '#f00' });
   }
-  //cvs.line(offset.x, offset.y, offset.x + dimensions.x, offset.y + dimensions.y).stroke({ width: 1, color: '#f00' });
-  //cvs.rect(dimensions.x, dimensions.y).move(offset.x, offset.y).stroke({ width: 1, color: '#f00' }).fill('none');
-  //cvs.rect(dimensions.x, dimensions.y).stroke({ width: 1, color: '#f00' }).fill('none');
-  //red_hair.draw_all_circles(cvs, '#f00', '#000');
-
 }
 
 
@@ -52,14 +46,14 @@ function draw() {
     svg.style.left = -frameCount;
   }
   if (frameCount < hair.circles.length) {
-    let ellipse = hair.draw_circle(cvs, frameCount, '#fff', '#000');
-    let red_ellipse = red_hair.draw_circle(cvs, red_hair.circles.length - frameCount, '#f00', '#000');
+    let ellipse = hair.draw_circle(cvs, frameCount);
+    //let red_ellipse = red_hair.draw_circle(cvs, red_hair.circles.length - frameCount, '#f00', '#000');
     ellipse.mouseover(function () {
       hair.writhe(2);
     });
-    red_ellipse.mouseover(function () {
-      red_hair.writhe(4);
-    });
+    // red_ellipse.mouseover(function () {
+    //   red_hair.writhe(4);
+    // });
   } else {
     noLoop();
   }

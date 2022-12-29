@@ -10,12 +10,16 @@ class medusa {
         max_hair_length, //length of hair
         curl_lat, //max latitude of curl
         curl_div = 2, //curl divisor; higher number is curlier
+        hair_stroke = '#fff',
+        hair_fill = '#000',
         hor = true, //true if horizontal hair; false if vertical hair
         min_diam = 1,
         max_diam = 70,
         ) {
         this.curl_lat = curl_lat;
         this.curl_div = curl_div;
+        this.stroke = hair_stroke;
+        this.fill = hair_fill;
         this.max_hair_length = max_hair_length;
         this.min_diam = min_diam;
         this.max_diam = max_diam;
@@ -38,7 +42,7 @@ class medusa {
     }
 
     get_corners(){ //get corners of hair footprint
-        return [
+        this.corners = [
             new pt(
                 min(this.circles.map(c => c.x - c.diam/2)),
                 min(this.circles.map(c => c.y - c.diam/2))
@@ -56,6 +60,7 @@ class medusa {
                 max(this.circles.map(c => c.y + c.diam/2))
             )
         ];
+        return this.corners; 
     }
 
     //these functions deal with generating bezier curves, which 
@@ -144,18 +149,34 @@ class medusa {
         }
     }
     //draw circle, identified by index, on SVG canvas
-    draw_circle(cvs, index, fill_clr, strk_clr){
+    draw_circle(cvs, index){
         //let diam = map(abs(this.circles.length/2-index), 0, this.circles.length/2, this.max_diam, this.min_diam); 
         let diam = this.circles[index].diam;
+        let fll;
+        let strk;
+        //interpolate between colors if fill type is array
+        if(this.fill.constructor === Array){
+            fll = lerpColor(color(this.fill[0]), color(this.fill[1]), index/this.circles.length);
+        } else {
+            //fill is a single color
+            fll = this.fill; 
+        }
+        //interpolate between colors if stroke type is array
+        if(this.stroke.constructor === Array){
+            strk = lerpColor(color(this.stroke[0]), color(this.stroke[1]), index/this.circles.length);
+        } else {
+            //stroke is a single color
+            strk = this.stroke;
+        }
         this.circles[index].ellipse = cvs.ellipse(diam, diam).attr(
             {cx: this.circles[index].x + this.offset.x, 
                 cy: this.circles[index].y + this.offset.y, 
-            fill: fill_clr, opacity: 0.5}).stroke({
-                width: 0.05 * diam, color: strk_clr});
+            fill: fll, opacity: 0.5}).stroke({
+                width: 0.05 * diam, color: strk});
         return this.circles[index].ellipse; 
     }
     //draw all circles on SVG canvas
-    draw_all_circles(cvs, fill_clr, strk_clr){
+    draw_all_circles(cvs){
         for(let i = 0; i < this.circles.length; i++){
             this.draw_circle(cvs, i, fill_clr, strk_clr);
         }
