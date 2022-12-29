@@ -29,14 +29,33 @@ class medusa {
     }
 
     get_dimensions(){ //get dimensions of hair footprint
-        let max_rad = max(this.circles.map(c => c.diam))/2; 
         return new pt(
             max(this.circles.map(c => c.x + c.diam/2))-min(
                 this.circles.map(c => c.x-c.diam/2)),
             max(this.circles.map(c => c.y + c.diam/2))-min(
                 this.circles.map(c => c.y - c.diam/2))
-        );
-        
+        ); 
+    }
+
+    get_corners(){ //get corners of hair footprint
+        return [
+            new pt(
+                min(this.circles.map(c => c.x - c.diam/2)),
+                min(this.circles.map(c => c.y - c.diam/2))
+            ),
+            new pt(
+                max(this.circles.map(c => c.x + c.diam/2)),
+                min(this.circles.map(c => c.y - c.diam/2))
+            ),
+            new pt(
+                max(this.circles.map(c => c.x + c.diam/2)),
+                max(this.circles.map(c => c.y + c.diam/2))
+            ),
+            new pt(
+                min(this.circles.map(c => c.x - c.diam/2)),
+                max(this.circles.map(c => c.y + c.diam/2))
+            )
+        ];
     }
 
     //these functions deal with generating bezier curves, which 
