@@ -31,9 +31,12 @@ class medusa {
     get_dimensions(){ //get dimensions of hair footprint
         let max_rad = max(this.circles.map(c => c.diam))/2; 
         return new pt(
-            max_rad*2 + max(this.circles.map(c => c.x))-min(this.circles.map(c => c.x)),
-            max_rad*2 + max(this.circles.map(c => c.y))-min(this.circles.map(c => c.y))
+            max(this.circles.map(c => c.x + c.diam/2))-min(
+                this.circles.map(c => c.x-c.diam/2)),
+            max(this.circles.map(c => c.y + c.diam/2))-min(
+                this.circles.map(c => c.y - c.diam/2))
         );
+        
     }
 
     //these functions deal with generating bezier curves, which 
@@ -86,9 +89,12 @@ class medusa {
                 let dist_from_center = sqrt(pow(x - this.max_hair_length/2, 2) + pow(y-this.curl_lat/2, 2));
                 // let diam = abs((1-abs(this.max_hair_length/2-dist)/(this.curl_lat/2))*
                 //     this.curl_lat/this.didiv) * this.diamfact;
-                let diam = map(dist_from_center, 0, max_dist, this.max_diam, this.min_diam);
-                this.circles.push({x:x, y:y, diam:diam});     
+                //let diam = map(dist_from_center, 0, max_dist, this.max_diam, this.min_diam);
+                this.circles.push({x:x, y:y});     
             }
+        }
+        for(let [i, c] of this.circles.entries()){
+            c.diam = map(abs(this.circles.length/2-i), 0, this.circles.length/2, this.max_diam, this.min_diam); 
         }
     }
     update_circles(){ //update circles after changing the structuring curves
@@ -120,7 +126,8 @@ class medusa {
     }
     //draw circle, identified by index, on SVG canvas
     draw_circle(cvs, index, fill_clr, strk_clr){
-        let diam = map(abs(this.circles.length/2-index), 0, this.circles.length/2, this.max_diam, this.min_diam); 
+        //let diam = map(abs(this.circles.length/2-index), 0, this.circles.length/2, this.max_diam, this.min_diam); 
+        let diam = this.circles[index].diam;
         this.circles[index].ellipse = cvs.ellipse(diam, diam).attr(
             {cx: this.circles[index].x + this.offset.x, 
                 cy: this.circles[index].y + this.offset.y, 

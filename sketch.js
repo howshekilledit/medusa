@@ -25,7 +25,12 @@ function setup() {
   hair.gen_circles();
   let dimensions = hair.get_dimensions();
 
-  var offset = new pt((windowWidth - dimensions.x) / 2, (windowHeight - dimensions.y) / 2);
+  var offset = new pt((windowWidth - dimensions.x)/2 , (windowHeight - dimensions.y)/2 );
+  var circles_xsorted =[...hair.circles].sort((a, b) => a.x + a.diam/2 - b.x - b.diam/2);
+  offset.x -= circles_xsorted[0].x - circles_xsorted[0].diam/2;
+  console.log(circles_xsorted[0].x);
+  var circles_ysorted =[...hair.circles].sort((a, b) => a.y + a.diam/2 - b.y - b.diam/2);
+  offset.y -= circles_ysorted[0].y - circles_ysorted[0].diam/2;
   console.log(dimensions, windowWidth, offset);
 
   hair.set_offset(offset);
@@ -36,8 +41,11 @@ function setup() {
   frameRate(12);
   noLoop();
   hair.draw_all_circles(cvs, '#fff', '#000');
+  hair.circles.sort((a, b) => a.x - b.x)[0].ellipse.attr('fill', '#00f');
+
   //cvs.line(offset.x, offset.y, offset.x + dimensions.x, offset.y + dimensions.y).stroke({ width: 1, color: '#f00' });
   cvs.rect(dimensions.x, dimensions.y).move(offset.x, offset.y).stroke({ width: 1, color: '#f00' }).fill('none');
+  //cvs.rect(dimensions.x, dimensions.y).stroke({ width: 1, color: '#f00' }).fill('none');
   //red_hair.draw_all_circles(cvs, '#f00', '#000');
 
 }
