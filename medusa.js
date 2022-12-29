@@ -182,7 +182,7 @@ class medusa {
             this.draw_circle(cvs, i);
         }
     }
-    writhe(amt = 1){ //changes each curve by specified "amt"
+    writhe(amt = 1, update_bb = false){ //changes each curve by specified "amt"
         for(let i = 0; i < this.curves.length; i++){
             for(let p = 0; p < 4; p++){
                 this.curves[i][p].x += random(-amt, amt); 
@@ -195,7 +195,9 @@ class medusa {
             }
         }
         this.update_circles(); 
-        this.update_bounding_box();
+        if(update_bb){
+            this.update_bounding_box();
+        }
     }
     bounding_box(cvs, strk = '#f00'){
         this.bb = cvs.rect(this.dimensions.x, this.dimensions.y).move(
@@ -204,9 +206,9 @@ class medusa {
         return this.bb;
     }
     update_bounding_box(){
-        let cvs = this.bb.parent();
         this.get_dimensions();
         this.get_corners();
-        this.bounding_box(cvs);
+        this.bb.size(this.dimensions.x, this.dimensions.y).move(
+            this.offset.x + this.corners[0].x, this.offset.y + this.corners[0].y);
     }
 }
