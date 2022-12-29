@@ -19,7 +19,7 @@ function setup() {
 
   let max_hair_width = windowWidth * 0.8;
 
-  hair = new medusa(incr, max_hair_width, 200, 5, 'None', ['#00f', '#f00']);
+  hair = new medusa(incr, max_hair_width, 200, 5);
   red_hair = new medusa(incr, max_hair_width, 200, 5);
   hair.gen_curves(0);
   hair.gen_circles();
@@ -35,9 +35,10 @@ function setup() {
   frameRate(12);
   //noLoop();
   //hair.draw_all_circles(cvs, '#fff', '#000');
-  for(let i = 0; i < corners.length; i++){
-     cvs.line(corners[i].x + offset.x, corners[i].y + offset.y, corners[(i+1)%corners.length].x + offset.x, corners[(i+1)%corners.length].y + offset.y).stroke({ width: 1, color: '#f00' });
-  }
+  hair.bounding_box(cvs, 'yellow');
+  // for(let i = 0; i < corners.length; i++){
+  //    cvs.line(corners[i].x + offset.x, corners[i].y + offset.y, corners[(i+1)%corners.length].x + offset.x, corners[(i+1)%corners.length].y + offset.y).stroke({ width: 1, color: '#f00' });
+  // }
 }
 
 

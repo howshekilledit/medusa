@@ -33,12 +33,13 @@ class medusa {
     }
 
     get_dimensions(){ //get dimensions of hair footprint
-        return new pt(
+        this.dimensions = new pt(
             max(this.circles.map(c => c.x + c.diam/2))-min(
                 this.circles.map(c => c.x-c.diam/2)),
             max(this.circles.map(c => c.y + c.diam/2))-min(
                 this.circles.map(c => c.y - c.diam/2))
         ); 
+        return this.dimensions;
     }
 
     get_corners(){ //get corners of hair footprint
@@ -178,7 +179,7 @@ class medusa {
     //draw all circles on SVG canvas
     draw_all_circles(cvs){
         for(let i = 0; i < this.circles.length; i++){
-            this.draw_circle(cvs, i, fill_clr, strk_clr);
+            this.draw_circle(cvs, i);
         }
     }
     writhe(amt = 1){ //changes each curve by specified "amt"
@@ -194,5 +195,18 @@ class medusa {
             }
         }
         this.update_circles(); 
+        this.update_bounding_box();
+    }
+    bounding_box(cvs, strk = '#f00'){
+        this.bb = cvs.rect(this.dimensions.x, this.dimensions.y).move(
+            this.offset.x + this.corners[0].x, this.offset.y + this.corners[0].y).stroke(
+                { width: 1, color: strk }).fill('none');  
+        return this.bb;
+    }
+    update_bounding_box(){
+        let cvs = this.bb.parent();
+        this.get_dimensions();
+        this.get_corners();
+        this.bounding_box(cvs);
     }
 }
