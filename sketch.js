@@ -52,7 +52,7 @@ function draw() {
   if (frameCount < hair.circles.length) {
 
     let ellipse = hair.draw_circle(cvs, frameCount);
-    let red_ellipse = red_hair.draw_circle(cvs, red_hair.circles.length - frameCount, '#f00', '#000');
+    let red_ellipse = red_hair.draw_circle(cvs, frameCount, '#f00', '#000');
     ellipse.mouseover(function () {
       hair.writhe(2);
     });
