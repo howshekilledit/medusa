@@ -20,7 +20,7 @@ function setup() {
   let max_hair_width = windowWidth * 0.8;
 
   hair = new medusa(incr, max_hair_width, 200, 5);
-  red_hair = new medusa(incr, max_hair_width, 200, 5);
+  red_hair = new medusa(incr, max_hair_width, 200, 5, '#000', '#f00');
   hair.gen_curves(0);
   hair.gen_circles();
   let dimensions = hair.get_dimensions();
@@ -33,6 +33,7 @@ function setup() {
   red_hair.gen_circles();
   console.log(hair);
   toggle_pan(); //first call, as of now needs to calls to work
+  toggle_pan();
   frameRate(12);
 
   //noLoop();
@@ -51,7 +52,7 @@ function draw() {
   if (frameCount < hair.circles.length) {
 
     let ellipse = hair.draw_circle(cvs, frameCount);
-    //let red_ellipse = red_hair.draw_circle(cvs, red_hair.circles.length - frameCount, '#f00', '#000');
+    let red_ellipse = red_hair.draw_circle(cvs, red_hair.circles.length - frameCount, '#f00', '#000');
     ellipse.mouseover(function () {
       hair.writhe(2);
     });
