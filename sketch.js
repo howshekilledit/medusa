@@ -31,7 +31,7 @@ function setup() {
   red_hair.set_offset(offset);
   red_hair.gen_curves(0);
   red_hair.gen_circles();
-  console.log(hair);
+  window.scrollTo(0,0); //scroll to top left of page
   toggle_pan(); //first call, as of now needs to calls to work
   toggle_pan();
   frameRate(12);
@@ -75,19 +75,19 @@ function keyTyped() {
       }
       break;
     }
-    case 'b': {
+    case 's': {
       hair.update_bounding_box();
       break;
     }
-    case 'c': { //toggle zoom and pan
+    case 'd': { //toggle zoom and pan
       toggle_pan();
       break;
     }
-    case 's': {
-      save('medusa.svg'); //needs update
-      break;
-    }
-    case 'd': {
+    // case 's': {
+    //   save('medusa.svg'); //needs update
+    //   break;
+    // }
+    case 'f': {
       let fll = hair.stroke;
       let strk = hair.fill;
       hair.fill = fll;
