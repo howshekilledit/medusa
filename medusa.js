@@ -64,7 +64,7 @@ class medusa {
         return this.corners;
     }
 
-    //these functions deal with generating bezier curves, which 
+    //these functions deal with generating bezier curves, which
     //are defined by four control points
     next_curve(last_curve, lateral_coord) {
         let curve = [];
@@ -165,7 +165,7 @@ class medusa {
 
     //draw circle, identified by index, on SVG canvas
     draw_circle(cvs, index) {
-        //let diam = map(abs(this.circles.length/2-index), 0, this.circles.length/2, this.max_diam, this.min_diam); 
+        //let diam = map(abs(this.circles.length/2-index), 0, this.circles.length/2, this.max_diam, this.min_diam);
         let diam = this.circles[index].diam;
         let fll;
         let strk;
@@ -235,5 +235,22 @@ class medusa {
         this.bb = cvs.rect(this.dimensions.x, this.dimensions.y).move(
             this.offset.x + this.corners[0].x, this.offset.y + this.corners[0].y).stroke(
                 { width: 1, color: strk }).fill('none');
+    }
+    circle_fades(index, duration = 2000) { //fade out circle at index
+        try {
+            let c = this.circles[index];
+            if (c.ellipse) {
+                c.ellipse.animate({ duration: duration }).opacity(0);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    delete() {
+        for (let c of this.circles) {
+            if (c.ellipse) {
+                c.ellipse.remove();
+            }
+        }
     }
 }
