@@ -169,10 +169,7 @@ function keyTyped() {
       }
       break;
     }
-    case 'f': {
-      toggle_pan();
-      break;
-    }
+ 
     default: {
       break;
     }
