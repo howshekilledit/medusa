@@ -158,7 +158,7 @@ function draw() {
     end_writhe += 0.005;
     i++;
   }
-  switch(floor(random(12*20))){
+  switch(floor(random(12*30))){
     case 0: 
       let fll = hair.stroke;
       let strk = hair.fill;
