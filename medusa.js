@@ -187,7 +187,7 @@ class medusa {
             {
                 cx: this.circles[index].x + this.offset.x,
                 cy: this.circles[index].y + this.offset.y,
-                fill: fll, opacity: 0.5
+                fill: fll, opacity: 0.2
             }).stroke({
                 width: 0.05 * diam, color: strk
             });

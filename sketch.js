@@ -12,6 +12,8 @@ let i = 0;  //index of circle to remove
 let red_left = false; //direction of red hair motion
 let mobile; 
 let f; 
+let colors = ['#f00', '#0f0', '#00f', '#000', '#fff'];
+let strks = ['#fff', '#000'];
 //note that right now width is the range for control points
 //and height is the range for the bezier curve full length
 function setup() {
@@ -25,10 +27,38 @@ function setup() {
 
   let incr = 30;
 
-  let max_hair_width = windowWidth * 0.8;
+  let max_hair_width = windowWidth * 0.95;
+  fll_1 = random(colors);
+  //choose a different color form clr_1
+  fll_2 = random(colors.filter(clr => clr != fll_1));
+  strk_1 = random(strks);
+  strk_2 = random(strks);
 
-  hair = new medusa(incr, max_hair_width, 200, 5);
-  red_hair = new medusa(incr, max_hair_width, 200, 5, '#000', '#f00');
+
+  // if fill is black, change stroke to white
+  switch(fll_1){
+    case '#000':{
+      strk_1 = '#fff';
+      break;
+    }
+    case '#fff':{
+      strk_1 = '#000';
+      break;
+    }
+  }
+  switch(fll_2){
+    case '#000':{
+      strk_2 = '#fff';
+      break;
+    }
+    case '#fff':{
+      strk_2 = '#000';
+      break;
+    }
+  }
+
+  hair = new medusa(incr, max_hair_width, 200, 5, strk_2, fll_2);
+  red_hair = new medusa(incr, max_hair_width, 200, 5, strk_1, fll_1);
   hair.gen_curves(0);
   hair.gen_circles();
   let dimensions = hair.get_dimensions();
@@ -128,6 +158,24 @@ function draw() {
     end_writhe += 0.005;
     i++;
   }
+  switch(floor(random(12*20))){
+    case 0: 
+      let fll = hair.stroke;
+      let strk = hair.fill;
+      hair.fill = fll;
+      hair.stroke = strk;
+      hair.update_colors(true); //update circles
+      break;
+    case 1:
+      let r_fll = red_hair.stroke;
+      let r_strk = red_hair.fill;
+      red_hair.fill = r_fll;
+      red_hair.stroke = r_strk;
+      red_hair.update_colors(true); //update circles
+      break;
+    default:
+      break; 
+  }
   if(f == hair.circles.length*2-1){
     noLoop();
     cvs.remove();
@@ -141,7 +189,7 @@ function draw() {
 function keyTyped() {
   console.log(key);
   switch (key) {
-    case 'a': { //toggle zoom and pan
+    case 'a': { 
       let fll = hair.stroke;
       let strk = hair.fill;
       hair.fill = fll;
