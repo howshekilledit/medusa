@@ -27,7 +27,7 @@ function setup() {
 
   let incr = 30;
 
-  let max_hair_width = windowWidth * 0.95;
+  let max_hair_width = windowWidth * 0.9;
   fll_1 = random(colors);
   //choose a different color form clr_1
   fll_2 = random(colors.filter(clr => clr != fll_1));
